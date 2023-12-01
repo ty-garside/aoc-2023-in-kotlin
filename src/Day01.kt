@@ -34,9 +34,9 @@ fun main() {
 
     fun part2(input: List<String>): Int {
         return input.sumOf { line ->
-            val tens = numberMap[line.findAnyOf(numberKeys)?.second]!!
-            val ones = numberMap[line.findLastAnyOf(numberKeys)?.second]!!
-            tens * 10 + ones
+            val tensDigit = numberMap[line.findAnyOf(numberKeys)?.second]!!
+            val onesDigit = numberMap[line.findLastAnyOf(numberKeys)?.second]!!
+            tensDigit * 10 + onesDigit
         }
     }
 
