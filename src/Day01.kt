@@ -1,11 +1,9 @@
 fun main() {
     fun part1(input: List<String>): Int {
         return input.sumOf { line ->
-            with(line.filter(Char::isDigit)) {
-                val tensDigit = first().digitToInt()
-                val onesDigit = last().digitToInt()
-                tensDigit * 10 + onesDigit
-            }
+            val tensDigit = line.first { it.isDigit() }.digitToInt()
+            val onesDigit = line.last { it.isDigit() }.digitToInt()
+            tensDigit * 10 + onesDigit
         }
     }
 
