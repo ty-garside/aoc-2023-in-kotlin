@@ -24,17 +24,25 @@ fun main() {
             var number = range.number
             var length = range.length
             while (length > 0) {
-                val entry = map.floorEntry(range.number)?.value
+                val entry = map.floorEntry(number)?.value
                 if (entry == null || number >= entry.source + entry.length) {
                     add(Range(number, length))
                     break
                 }
-                minOf(entry.source - number, length).let {
-                    add(Range(number, it))
-                    number += it
-                    length -= it
+                if (number + length <= entry.source + entry.length) {
+                    add(Range(number - entry.source + entry.destination, length))
+                    break
                 }
+                val newNumber = number - entry.source + entry.destination
+                val newLength = entry.length - number + entry.source
+                add(Range(newNumber, newLength))
+                number += newLength
+                length -= newLength
             }
+        }
+
+        override fun toString(): String {
+            return map.toString()
         }
     }
 
@@ -50,7 +58,7 @@ fun main() {
     )
 
     fun Iterator<String>.readList(name: String) = buildList {
-        var line = next()
+        val line = next()
         if (!line.startsWith("$name: ")) error("Invalid line: $line")
         if (next().isNotBlank()) error("Blank line expected")
         line.substringAfter(": ")
@@ -87,24 +95,16 @@ fun main() {
         val file = input.iterator().readFile {
             map { Range(it, 1) }
         }
-        println(file)
+
         return file.seeds
             .asSequence()
-            .onEach(::println)
             .flatMap { file.seedToSoil.map(it) }
-            .onEach(::println)
             .flatMap { file.soilToFertilizer.map(it) }
-            .onEach(::println)
             .flatMap { file.fertilizerToWater.map(it) }
-            .onEach(::println)
             .flatMap { file.waterToLight.map(it) }
-            .onEach(::println)
             .flatMap { file.lightToTemperature.map(it) }
-            .onEach(::println)
             .flatMap { file.temperatureToHumidity.map(it) }
-            .onEach(::println)
             .flatMap { file.humidityToLocation.map(it) }
-            .onEach(::println)
             .minOf { it.number }
     }
 
@@ -112,29 +112,25 @@ fun main() {
         val file = input.iterator().readFile {
             chunked(2).map { Range(it[0], it[1]) }
         }
-        TODO()
-//        return file.seeds
-//            .asSequence()
-//            .chunked(2) {
-//                it[0]..it[0] + it[1]
-//            }
-//            .flatten()
-//            .map { file.seedToSoil[it] }
-//            .map { file.soilToFertilizer[it] }
-//            .map { file.fertilizerToWater[it] }
-//            .map { file.waterToLight[it] }
-//            .map { file.lightToTemperature[it] }
-//            .map { file.temperatureToHumidity[it] }
-//            .map { file.humidityToLocation[it] }
-//            .min()
+
+        return file.seeds
+            .asSequence()
+            .flatMap { file.seedToSoil.map(it) }
+            .flatMap { file.soilToFertilizer.map(it) }
+            .flatMap { file.fertilizerToWater.map(it) }
+            .flatMap { file.waterToLight.map(it) }
+            .flatMap { file.lightToTemperature.map(it) }
+            .flatMap { file.temperatureToHumidity.map(it) }
+            .flatMap { file.humidityToLocation.map(it) }
+            .minOf { it.number }
     }
 
-// test if implementation meets criteria from the description, like:
+    // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day05_test")
     check(part1(testInput) == 35L)
-// check(part2(testInput) == 46L)
+    check(part2(testInput) == 46L)
 
     val input = readInput("Day05")
-//    part1(input).println()
-//    part2(input).println()
+    part1(input).println()
+    part2(input).println()
 }
