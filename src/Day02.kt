@@ -10,8 +10,9 @@ fun main() {
         val reveals: List<Reveal>,
     )
 
-    fun parseGame(line: String) =
-        Game(id = line.substringBefore(": ").substringAfter(' ').toInt(), reveals = buildList {
+    fun parseGame(line: String) = Game(
+        id = line.substringBefore(": ").substringAfter(' ').toInt(),
+        reveals = buildList {
             line.substringAfter(": ").split("; ").forEach { reveal ->
                 var red = 0
                 var green = 0
@@ -26,7 +27,8 @@ fun main() {
                 }
                 add(Reveal(red, green, blue))
             }
-        })
+        }
+    )
 
     fun Game.isPossibleWith(red: Int, green: Int, blue: Int) = reveals.all {
         it.red <= red &&
