@@ -40,10 +40,6 @@ fun main() {
                 length -= newLength
             }
         }
-
-        override fun toString(): String {
-            return map.toString()
-        }
     }
 
     data class File(
@@ -91,38 +87,27 @@ fun main() {
         )
     }
 
-    fun part1(input: List<String>): Long {
-        val file = input.iterator().readFile {
-            map { Range(it, 1) }
-        }
+    fun File.findMinLocation() = seeds.asSequence()
+        .flatMap { seedToSoil.map(it) }
+        .flatMap { soilToFertilizer.map(it) }
+        .flatMap { fertilizerToWater.map(it) }
+        .flatMap { waterToLight.map(it) }
+        .flatMap { lightToTemperature.map(it) }
+        .flatMap { temperatureToHumidity.map(it) }
+        .flatMap { humidityToLocation.map(it) }
+        .onEach { println(it) }
+        .minOf { it.number }
 
-        return file.seeds
-            .asSequence()
-            .flatMap { file.seedToSoil.map(it) }
-            .flatMap { file.soilToFertilizer.map(it) }
-            .flatMap { file.fertilizerToWater.map(it) }
-            .flatMap { file.waterToLight.map(it) }
-            .flatMap { file.lightToTemperature.map(it) }
-            .flatMap { file.temperatureToHumidity.map(it) }
-            .flatMap { file.humidityToLocation.map(it) }
-            .minOf { it.number }
+    fun part1(input: List<String>): Long {
+        return input.iterator()
+            .readFile { map { Range(it, 1) } }
+            .findMinLocation()
     }
 
     fun part2(input: List<String>): Long {
-        val file = input.iterator().readFile {
-            chunked(2).map { Range(it[0], it[1]) }
-        }
-
-        return file.seeds
-            .asSequence()
-            .flatMap { file.seedToSoil.map(it) }
-            .flatMap { file.soilToFertilizer.map(it) }
-            .flatMap { file.fertilizerToWater.map(it) }
-            .flatMap { file.waterToLight.map(it) }
-            .flatMap { file.lightToTemperature.map(it) }
-            .flatMap { file.temperatureToHumidity.map(it) }
-            .flatMap { file.humidityToLocation.map(it) }
-            .minOf { it.number }
+        return input.iterator()
+            .readFile { chunked(2).map { Range(it[0], it[1]) } }
+            .findMinLocation()
     }
 
     // test if implementation meets criteria from the description, like:
