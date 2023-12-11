@@ -32,7 +32,7 @@ fun main() {
         return count
     }
 
-    fun part2(input: List<String>): Int {
+    fun part2(input: List<String>): Long {
         val moves = input[0]
         val nodes = input.subList(2, input.size).associate {
             it.substringBefore(" = ") to
@@ -47,10 +47,11 @@ fun main() {
         var node = nodes.keys.filter { it.endsWith('A') }
         var path = node.map { nodes[it]!! }
         var move = 0
-        var count = 0
+        var count = 0L
 
         while (node.any { !it.endsWith('Z') }) {
-            if (node.count { it.endsWith('Z') } > 3) {
+//            if (node.count { it.endsWith('Z') } > 3) {
+            if (count % 1_000_000_000L == 0L) {
                 println("node=$node path=$path move=$move moves[move]=${moves[move]} count=$count")
             }
             node = when (moves[move]) {
@@ -72,7 +73,7 @@ fun main() {
     val testInput3 = readInput("Day08_test3")
 //    check(part1(testInput) == 2)
 //    check(part1(testInput2) == 6)
-    check(part2(testInput3) == 6)
+    check(part2(testInput3) == 6L)
 
     val input = readInput("Day08")
 //    part1(input).println()
